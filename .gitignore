@@ -1,0 +1,46 @@
+
+# =========================
+# Expo / React Native
+# =========================
+Dooro/node_modules
+Dooro/.expo
+Dooro/dist
+Dooro/.expo-shared
+Dooro/web-build
+Dooro/android/app/build
+Dooro/ios/build
+
+# Environment files
+Dooro/.env
+Dooro/.env.*
+
+# Logs
+Dooro/npm-debug.log*
+Dooro/yarn-debug.log*
+Dooro/yarn-error.log*
+
+# =========================
+# Laravel
+# =========================
+Backend/vendor
+Backend/node_modules
+
+# Environment files
+Backend/.env
+Backend/.env.*
+
+# Laravel generated files
+Backend/storage/logs/*
+Backend/storage/framework/cache/*
+Backend/storage/framework/sessions/*
+Backend/storage/framework/views/*
+Backend/bootstrap/cache/*
+
+# Ignore storage public symlink/generated files
+Backend/storage/app/public
+
+# =========================
+# Common
+# =========================
+.DS_Store
+Thumbs.db
