@@ -29,11 +29,11 @@ export default function ShopDetailsScreen() {
   const [otherShopType, setOtherShopType] = useState("");
 
   const [errors, setErrors] = useState({
-  shopName: false,
-  address: false,
-  mobile: false,
-  otherShopType: false,
-});
+    shopName: false,
+    address: false,
+    mobile: false,
+    otherShopType: false,
+  });
 
   const shakeAnim = useRef(new Animated.Value(0)).current;
 
@@ -92,10 +92,7 @@ export default function ShopDetailsScreen() {
           shop_name: shopName,
           address,
           mobile,
-          shop_type:
-            shopType === "Other"
-                ? otherShopType
-                : shopType,
+          shop_type: shopType === "Other" ? otherShopType : shopType,
         })
       );
 
@@ -112,12 +109,11 @@ export default function ShopDetailsScreen() {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
-<ProgressHeader
-  step={0}
-  title="Shop details"
-  subtitle="Tell us about your business"
-/>
-     
+      <ProgressHeader
+        step={0}
+        title="Shop details"
+        subtitle="Tell us about your business"
+      />
 
       {/* BODY */}
       <ScrollView
@@ -136,8 +132,9 @@ export default function ShopDetailsScreen() {
           <Text style={styles.label}>Shop / Business Name</Text>
 
           <TextInput
+            underlineColorAndroid="transparent"
             placeholder="Enter shop name"
-            placeholderTextColor="#9ca3af"
+            placeholderTextColor="#9aa3b2"
             value={shopName}
             style={[styles.input, errors.shopName && styles.inputError]}
             onChangeText={(text) => {
@@ -163,14 +160,14 @@ export default function ShopDetailsScreen() {
           <Text style={styles.label}>Address</Text>
 
           <TextInput
+            underlineColorAndroid="transparent"
             placeholder="Enter your full address"
-            placeholderTextColor="#9ca3af"
+            placeholderTextColor="#9aa3b2"
             value={address}
             multiline
             style={[
               styles.input,
-              { height: 90, textAlignVertical: "top" },
-
+              styles.textArea,
               errors.address && styles.inputError,
             ]}
             onChangeText={(text) => {
@@ -196,23 +193,24 @@ export default function ShopDetailsScreen() {
           <Text style={styles.label}>Mobile Number</Text>
 
           <TextInput
+            underlineColorAndroid="transparent"
             placeholder="Enter mobile number"
-            placeholderTextColor="#9ca3af"
+            placeholderTextColor="#9aa3b2"
             value={mobile}
             keyboardType="phone-pad"
             style={[styles.input, errors.mobile && styles.inputError]}
             onChangeText={(text) => {
-                // ONLY ALLOW: 0-9 + - space
-                const cleaned = text.replace(/[^0-9+\-]/g, "");
+              // ONLY ALLOW: 0-9 + - space
+              const cleaned = text.replace(/[^0-9+\-]/g, "");
 
-                setMobile(cleaned);
+              setMobile(cleaned);
 
-                setErrors((prev) => ({
+              setErrors((prev) => ({
                 ...prev,
                 mobile: false,
-                }));
+              }));
             }}
-            />
+          />
         </Animated.View>
 
         {/* SHOP TYPE */}
@@ -247,41 +245,35 @@ export default function ShopDetailsScreen() {
                 </TouchableOpacity>
               );
             })}
-
-
           </View>
         </Animated.View>
-                    {shopType === "Other" && (
-  <Animated.View
-    style={[
-      styles.otherTypeWrapper,
+        {shopType === "Other" && (
+          <Animated.View
+            style={[
+              styles.otherTypeWrapper,
 
-      errors.otherShopType && {
-        transform: [{ translateX: shakeAnim }],
-      },
-    ]}
-  >
-    <TextInput
-      placeholder="Enter your shop type"
-      placeholderTextColor="#9ca3af"
-      value={otherShopType}
-      style={[
-        styles.input,
+              errors.otherShopType && {
+                transform: [{ translateX: shakeAnim }],
+              },
+            ]}
+          >
+            <TextInput
+              underlineColorAndroid="transparent"
+              placeholder="Enter your shop type"
+              placeholderTextColor="#9aa3b2"
+              value={otherShopType}
+              style={[styles.input, errors.otherShopType && styles.inputError]}
+              onChangeText={(text) => {
+                setOtherShopType(text);
 
-        errors.otherShopType &&
-          styles.inputError,
-      ]}
-      onChangeText={(text) => {
-        setOtherShopType(text);
-
-        setErrors((prev) => ({
-          ...prev,
-          otherShopType: false,
-        }));
-      }}
-    />
-  </Animated.View>
-)}
+                setErrors((prev) => ({
+                  ...prev,
+                  otherShopType: false,
+                }));
+              }}
+            />
+          </Animated.View>
+        )}
       </ScrollView>
 
       {/* FOOTER */}
@@ -306,66 +298,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff7fb",
-  },
-
-  header: {
-    paddingTop: 40,
-    paddingBottom: 30,
-    paddingHorizontal: 24,
-    position: "relative",
-    overflow: "hidden",
-  },
-
-  circle1: {
-    position: "absolute",
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: "rgba(255,255,255,0.08)",
-    top: -30,
-    right: -20,
-  },
-
-  circle2: {
-    position: "absolute",
-    width: 65,
-    height: 65,
-    borderRadius: 33,
-    backgroundColor: "rgba(255,255,255,0.06)",
-    bottom: 8,
-    left: -14,
-  },
-
-  headerTop: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-
-  logoTm: {
-    fontSize: 11,
-    color: "rgba(255,255,255,0.65)",
-  },
-  backButton: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: "rgba(255,255,255,0.15)",
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 12,
-  },
-
-  backText: {
-    color: "#fff",
-    fontSize: 16,
-    fontFamily: Typography.fontFamily.bold,
-  },
-
-  logo: {
-    color: "#fff",
-    fontSize: 28,
-    fontFamily: Typography.fontFamily.display,
-    letterSpacing: -0.6,
   },
 
   stepRow: {
@@ -415,29 +347,42 @@ const styles = StyleSheet.create({
   },
 
   fieldWrapper: {
-    marginBottom: 22,
+    marginBottom: 24,
   },
 
   label: {
-    color: "#374151",
-    marginBottom: 7,
-    fontFamily: Typography.fontFamily.bold,
-    fontSize: 11,
-    letterSpacing: 0.8,
-    textTransform: "uppercase",
+    color: "#111827",
+    marginBottom: 9,
+
+    fontFamily: Typography.fontFamily.medium,
+
+    fontSize: 14,
+    lineHeight: 20,
+
+    letterSpacing: 0.2,
   },
 
   input: {
     backgroundColor: "#fff",
-    borderWidth: 1,
-    borderColor: "#e5e7eb",
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 14,
+    borderWidth: 1.5,
+    borderColor: "#d7dbe2",
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
     color: "#111827",
-    fontFamily: Typography.fontFamily.regular,
-    fontSize: 14,
-    lineHeight: 20,
+    fontFamily: Typography.fontFamily.medium,
+    fontSize: 15,
+    lineHeight: 22,
+    includeFontPadding: false,
+    textAlignVertical: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.03,
+    shadowRadius: 8,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    elevation: 1,
   },
 
   chipContainer: {
@@ -461,12 +406,11 @@ const styles = StyleSheet.create({
   },
 
   chipText: {
-    color: "#6b7280",
+    color: "#4b5563",
     fontFamily: Typography.fontFamily.medium,
-    fontSize: 11,
-    lineHeight: 16,
+    fontSize: 13,
+    lineHeight: 18,
   },
-
   selectedChipText: {
     color: "#e0377a",
     fontFamily: Typography.fontFamily.bold,
@@ -492,16 +436,19 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontFamily: Typography.fontFamily.bold,
-    fontSize: 14,
-    letterSpacing: 0.3,
+    fontSize: 15,
+    letterSpacing: 0.2,
   },
   inputError: {
-    borderColor: "#ef4444",
-    borderWidth: 1.5,
-
-    backgroundColor: "rgba(239,68,68,0.04)",
+    borderColor: "#f87171",
+    backgroundColor: "#fffafa",
   },
   otherTypeWrapper: {
-  marginTop: 14,
-},
+    marginTop: 14,
+  },
+  textArea: {
+    height: 100,
+    textAlignVertical: "top",
+    paddingTop: 16,
+  },
 });

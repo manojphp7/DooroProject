@@ -23,7 +23,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-    "intentFilters": [
+      "intentFilters": [
         {
           "action": "VIEW",
           "autoVerify": true,
@@ -37,7 +37,10 @@
               "host": "verify-email"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },
@@ -47,7 +50,6 @@
     },
     "plugins": [
       "expo-router",
-
       [
         "expo-splash-screen",
         {
@@ -67,18 +69,23 @@
           "cameraPermission": "Allow Dooro to access your camera."
         }
       ],
-
       "expo-font",
       "expo-web-browser",
-
       [
         "@react-native-google-signin/google-signin",
         {
           "iosUrlScheme": "com.googleusercontent.apps.646204406497-m26jph1oonum0rlv7ahrdaebjjspbrjd"
         }
       ],
-
-      "expo-secure-store"
+      [
+        "@stripe/stripe-react-native",
+        {
+          "merchantIdentifier": "merchant.com.app.dooro",
+          "enableGooglePay": true
+        }
+      ],
+      "expo-secure-store",
+      "@stripe/stripe-react-native"
     ],
     "experiments": {
       "typedRoutes": true,

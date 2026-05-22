@@ -135,9 +135,65 @@ Route::post('/reset-password', function (Request $request) {
         ], 400);
 });
 
+Route::get('/plans', function () {
+    
+    return response()->json([
+        [
+            "id" => "basic",
+            "title" => "Basic Cover",
+            "price" => "£100",
+            "subtitle" => "No parts replacement",
+            "icon" => "🛠️",
+            "features" => [
+                "Shutter damage protection",
+                "24/7 claims support",
+                "Public liability included"
+            ]
+        ],
+
+        [
+            "id" => "full",
+            "title" => "Full Cover",
+            "price" => "£250",
+            "subtitle" => "Parts & labour included",
+            "icon" => "🛡️",
+            "features" => [
+                "Everything in Basic",
+                "Full parts replacement",
+                "Accidental damage cover",
+                "Priority repair support"
+            ]
+        ]
+    ]);
+});
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    Route::post('/add-shop', [ShopDetailController::class, 'add']);
+    Route::post(
+        '/add-shop',
+        [ShopDetailController::class, 'add']
+    );
 
+    Route::post(
+        '/create-payment',
+        [ShopDetailController::class, 'createPayment']
+    );
+
+    Route::post(
+        '/payment-success',
+        [ShopDetailController::class, 'paymentSuccess']
+    );
+
+    Route::post(
+        '/payment-failed',
+        [ShopDetailController::class, 'paymentFailed']
+    );
+
+
+
+    Route::get(
+    '/my-policies',
+    [ShopDetailController::class, 'myPolicies']
+    );
 });
+

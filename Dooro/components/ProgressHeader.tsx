@@ -13,7 +13,7 @@ type Props = {
 
 export default function ProgressHeader({
   step,
-  totalSteps = 3,
+  totalSteps = 4,
   title,
   subtitle,
   showBack = true,
@@ -75,7 +75,7 @@ export default function ProgressHeader({
 
 const styles = StyleSheet.create({
   header: {
-    paddingTop: 58,
+    paddingTop: 50,
     paddingHorizontal: 22,
     paddingBottom: 28,
     borderBottomLeftRadius: 28,

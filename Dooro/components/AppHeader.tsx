@@ -27,22 +27,7 @@ export default function AppHeader({
       <View style={styles.circle2} />
 
       {/* TOP ROW */}
-      <View style={styles.topRow}>
-        {showBack ? (
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => router.back()}
-          >
-            <Text style={styles.backText}>←</Text>
-          </TouchableOpacity>
-        ) : (
-          <View style={{ width: 40 }} />
-        )}
 
-        <Text style={styles.logo}>
-          Dooro<Text style={styles.logoTm}>®</Text>
-        </Text>
-      </View>
 
       {/* CONTENT */}
       <View style={styles.contentRow}>
@@ -60,7 +45,7 @@ export default function AppHeader({
 
 const styles = StyleSheet.create({
   header: {
-    paddingTop: 58,
+    paddingTop: 50,
     paddingHorizontal: 22,
     paddingBottom: 28,
     borderBottomLeftRadius: 28,

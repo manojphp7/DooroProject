@@ -61,7 +61,7 @@ export default function HomeScreen() {
           <TouchableOpacity
             style={styles.actionCard}
             activeOpacity={0.85}
-            onPress={() => router.push("/upload-photos")}
+            onPress={() => router.push("/policies-screen")}
           >
             <LinearGradient
               colors={["#c42d6a", "#e8558e"]}
@@ -98,7 +98,7 @@ export default function HomeScreen() {
             <Text style={styles.actionSub}>Protect Another Shop</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionCard} activeOpacity={0.85}>
+          <TouchableOpacity style={styles.actionCard} activeOpacity={0.85}  onPress={() => router.push("/choose-plan")}>
             <LinearGradient
               colors={["#c42d6a", "#e8558e"]}
               style={styles.actionIconWrap}
@@ -110,7 +110,7 @@ export default function HomeScreen() {
             <Text style={styles.actionSub}>Track your claim status</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionCard} activeOpacity={0.85}>
+          <TouchableOpacity style={styles.actionCard} activeOpacity={0.85} onPress={() => router.push("/upload-photos")}>
             <LinearGradient
               colors={["#c42d6a", "#e8558e"]}
               style={styles.actionIconWrap}
