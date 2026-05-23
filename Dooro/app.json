@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "Dooro",
+    "jsEngine": "hermes",
     "slug": "dooro",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -84,8 +85,7 @@
           "enableGooglePay": true
         }
       ],
-      "expo-secure-store",
-      "@stripe/stripe-react-native"
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true,

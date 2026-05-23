@@ -57,6 +57,8 @@ export default function RootLayout() {
       <Stack.Screen name="upload-photos" options={{ headerShown: false }} />
       <Stack.Screen name="choose-plan" options={{ headerShown: false }} />
       <Stack.Screen name="policies-screen" options={{ headerShown: false }} />
+      <Stack.Screen name="payment-screen" options={{ headerShown: false }} />
+      <Stack.Screen name="claim-screen" options={{ headerShown: false }} />
     </Stack>
   );
 }

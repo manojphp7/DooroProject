@@ -148,12 +148,14 @@ class ShopDetailController extends Controller
             'payment_intent_id' => 'required',
         ]);
 
+        $policy_id = $request->policy_id;
+
         $shop = ShopDetail::findOrFail(
-            $request->policy_id
+            $policy_id
         );
 
         $shop->update([
-            'payment_status' => 'success',
+            'payment_status' => 'paid',
 
             'payment_intent_id' =>
                 $request->payment_intent_id,
@@ -161,7 +163,7 @@ class ShopDetailController extends Controller
 
         return response()->json([
             'success' => true,
-
+            'policy_id' => $policy_id,
             'message' => 'Payment successful',
         ]);
     }
@@ -193,12 +195,30 @@ class ShopDetailController extends Controller
         ]);
     }
 
-    public function myPolicies()
+    public function myPolicies(Request $request)
     {
-        $policies = ShopDetail::where(
+        $query = ShopDetail::where(
             'user_id',
             auth()->id()
-        )
+        );
+
+        // ?status=active
+        if ($request->filled('status')) {
+            $query->where(
+                'status',
+                $request->status
+            );
+        }
+
+        // ?policy_type=shop
+        if ($request->filled('policy_type')) {
+            $query->where(
+                'policy_type',
+                $request->policy_type
+            );
+        }
+
+        $policies = $query
             ->latest()
             ->get();
 

@@ -15,174 +15,157 @@ import {
   View,
 } from "react-native";
 
-import {
-  StripeProvider,
-  usePaymentSheet,
-} from "@stripe/stripe-react-native";
+import { StripeProvider, usePaymentSheet } from "@stripe/stripe-react-native";
 
 function PaymentScreenContent() {
   const [loading, setLoading] = useState(false);
 
   const [plan, setPlan] = useState<any>(null);
 
-  const { initPaymentSheet, presentPaymentSheet } =
-    usePaymentSheet();
+  const { initPaymentSheet, presentPaymentSheet } = usePaymentSheet();
 
   useEffect(() => {
     getPlan();
   }, []);
 
   const getPlan = async () => {
-    const savedPlan =
-      await SecureStore.getItemAsync("selected_plan");
-
+    const savedPlan = await SecureStore.getItemAsync("selected_plan");
+const policyId = await SecureStore.getItemAsync("policy_id");
+console.log("policyId" + policyId)
     if (savedPlan) {
       setPlan(JSON.parse(savedPlan));
     }
   };
 
-    const fetchPaymentSheetParams = async () => {
+  const fetchPaymentSheetParams = async () => {
     try {
-        const token =
-        await SecureStore.getItemAsync("token");
+      const token = await SecureStore.getItemAsync("token");
 
-        const policyId =
-        await SecureStore.getItemAsync("policy_id");
+      const policyId = await SecureStore.getItemAsync("policy_id");
 
-        const response = await fetch(
-        API_CONFIG.CREATE_PAYMENT,
-        {
-            method: "POST",
+      const response = await fetch(API_CONFIG.CREATE_PAYMENT, {
+        method: "POST",
 
-            headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-            },
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
 
-            body: JSON.stringify({
-            policy_id: policyId,
-            }),
-        }
-        );
+        body: JSON.stringify({
+          policy_id: policyId,
+        }),
+      });
 
-        const data = await response.json();
+      const data = await response.json();
 
-        if (!response.ok) {
-        Alert.alert(
-            "Error",
-            data.message || "Payment failed"
-        );
+      if (!response.ok) {
+        Alert.alert("Error", data.message || "Payment failed");
 
         return null;
-        }
+      }
 
-        return {
+      return {
         clientSecret: data.client_secret,
 
-        paymentIntentId:
-            data.payment_intent_id,
-        };
+        paymentIntentId: data.payment_intent_id,
+      };
     } catch (error) {
-        console.log(error);
+      console.log(error);
 
-        Alert.alert(
-        "Error",
-        "Something went wrong"
-        );
+      Alert.alert("Error", "Something went wrong");
 
-        return null;
+      return null;
     }
-    };
+  };
 
-const initializePaymentSheet = async () => {
-
-  const paymentData =
-    await fetchPaymentSheetParams();
-
-  if (!paymentData) {
-    return false;
-  }
-
-  const { error } = await initPaymentSheet({
-    merchantDisplayName: "Dooro",
-
-    paymentIntentClientSecret:
-      paymentData.clientSecret,
-
-    allowsDelayedPaymentMethods: true,
-
-    defaultBillingDetails: {
-      name: "Customer",
-    },
-    googlePay: {
-    merchantCountryCode: "GB",
-    currencyCode: "GBP",
-    testEnv: true,
-    },
-    appearance: {
-      colors: {
-        primary: "#e0377a",
-        background: "#fff7fb",
-        componentBackground: "#ffffff",
-        componentBorder: "#f3d5e3",
-        componentText: "#111827",
-        primaryText: "#111827",
-        secondaryText: "#6b7280",
-        placeholderText: "#9ca3af",
-        icon: "#e0377a",
-      },
-
-      shapes: {
-        borderRadius: 18,
-
-        shadow: {
-          opacity: 0,
-        },
-      },
-    },
-
-    returnURL:
-      "com.app.dooro://stripe-redirect",
-  });
-
-  if (error) {
-    Alert.alert(error.code, error.message);
-
-    return false;
-  }
-
-  return paymentData;
-};
-
-
-
-const openPaymentSheet = async () => {
-  try {
-    setLoading(true);
-
-    const paymentData =
-      await initializePaymentSheet();
+  const initializePaymentSheet = async () => {
+    const paymentData = await fetchPaymentSheetParams();
 
     if (!paymentData) {
-      return;
+      return false;
     }
 
-    const { error } =
-      await presentPaymentSheet();
+    const { error } = await initPaymentSheet({
+      merchantDisplayName: "Dooro",
 
-    const token =
-      await SecureStore.getItemAsync("token");
+      paymentIntentClientSecret: paymentData.clientSecret,
 
-    const policyId =
-      await SecureStore.getItemAsync("policy_id");
+      allowsDelayedPaymentMethods: true,
 
-    // FAILED
+      defaultBillingDetails: {
+        name: "Customer",
+      },
+      googlePay: {
+        merchantCountryCode: "GB",
+        currencyCode: "GBP",
+        testEnv: true,
+      },
+      appearance: {
+        colors: {
+          primary: "#e0377a",
+          background: "#fff7fb",
+          componentBackground: "#ffffff",
+          componentBorder: "#f3d5e3",
+          componentText: "#111827",
+          primaryText: "#111827",
+          secondaryText: "#6b7280",
+          placeholderText: "#9ca3af",
+          icon: "#e0377a",
+        },
+
+        shapes: {
+          borderRadius: 18,
+
+          shadow: {
+            opacity: 0,
+          },
+        },
+      },
+
+      returnURL: "com.app.dooro://stripe-redirect",
+    });
+
     if (error) {
+      Alert.alert(error.code, error.message);
 
-      await fetch(
-        API_CONFIG.PAYMENT_FAILED,
-        {
+      return false;
+    }
+
+    return paymentData;
+  };
+
+  const clearTempData = async () => {
+    await SecureStore.deleteItemAsync("shop_details");
+
+    await SecureStore.deleteItemAsync("shop_images");
+
+    await SecureStore.deleteItemAsync("selected_plan");
+
+    await SecureStore.deleteItemAsync("policy_id");
+  };
+
+  const openPaymentSheet = async () => {
+    try {
+      setLoading(true);
+
+      const paymentData = await initializePaymentSheet();
+
+      if (!paymentData) {
+        return;
+      }
+
+      console.log(paymentData.paymentIntentId)
+
+      const { error } = await presentPaymentSheet();
+
+      const token = await SecureStore.getItemAsync("token");
+
+      const policyId = await SecureStore.getItemAsync("policy_id");
+
+      // FAILED
+      if (error) {
+        await fetch(API_CONFIG.PAYMENT_FAILED, {
           method: "POST",
 
           headers: {
@@ -193,21 +176,15 @@ const openPaymentSheet = async () => {
           body: JSON.stringify({
             policy_id: policyId,
           }),
-        }
-      );
+        });
 
-      Alert.alert(
-        "Payment Failed",
-        error.message
-      );
+        Alert.alert("Payment Failed", error.message);
 
-      return;
-    }
+        return;
+      }
 
-    // SUCCESS
-    await fetch(
-      API_CONFIG.PAYMENT_SUCCESS,
-      {
+      // SUCCESS
+     const response = await fetch(API_CONFIG.PAYMENT_SUCCESS, {
         method: "POST",
 
         headers: {
@@ -217,34 +194,24 @@ const openPaymentSheet = async () => {
 
         body: JSON.stringify({
           policy_id: policyId,
-
-          payment_intent_id:
-            paymentData.paymentIntentId,
+          payment_intent_id: paymentData.paymentIntentId,
         }),
-      }
-    );
+      });
 
-    Alert.alert(
-      "Payment Successful",
-      "Your insurance policy has been activated."
-    );
+const data = await response.json();
 
-    //router.replace("/success");
+console.log(data);
 
-  } catch (error) {
+     // await clearTempData();
+      //router.replace("/policies-screen");
+    } catch (error) {
+      console.log(error);
 
-    console.log(error);
-
-    Alert.alert(
-      "Error",
-      "Something went wrong"
-    );
-
-  } finally {
-
-    setLoading(false);
-  }
-};
+      Alert.alert("Error", "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -266,70 +233,49 @@ const openPaymentSheet = async () => {
             <Text style={styles.icon}>🛡️</Text>
           </View>
 
-          <Text style={styles.summaryTitle}>
-            Policy Summary
-          </Text>
+          <Text style={styles.summaryTitle}>Policy Summary</Text>
 
           <View style={styles.row}>
             <Text style={styles.label}>Plan</Text>
 
-            <Text style={styles.value}>
-              {plan?.plan_name}
-            </Text>
+            <Text style={styles.value}>{plan?.plan_name}</Text>
           </View>
 
           <View style={styles.row}>
-            <Text style={styles.label}>
-              Coverage Duration
-            </Text>
+            <Text style={styles.label}>Coverage Duration</Text>
 
-            <Text style={styles.value}>
-              1 Year
-            </Text>
+            <Text style={styles.value}>1 Year</Text>
           </View>
 
           <View style={styles.divider} />
 
           <View style={styles.totalRow}>
-            <Text style={styles.totalLabel}>
-              Total Amount
-            </Text>
+            <Text style={styles.totalLabel}>Total Amount</Text>
 
-            <Text style={styles.totalAmount}>
-              £{plan?.payment_amount}
-            </Text>
+            <Text style={styles.totalAmount}>£{plan?.payment_amount}</Text>
           </View>
         </View>
 
         {/* PAYMENT METHODS */}
         <View style={styles.paymentCard}>
-          <Text style={styles.paymentTitle}>
-            Accepted Payment Methods
-          </Text>
+          <Text style={styles.paymentTitle}>Accepted Payment Methods</Text>
 
           <View style={styles.methodRow}>
             <View style={styles.method}>
-              <Text style={styles.methodText}>
-                💳 Cards
-              </Text>
+              <Text style={styles.methodText}>💳 Cards</Text>
             </View>
 
             <View style={styles.method}>
-              <Text style={styles.methodText}>
-                🍎 Apple Pay
-              </Text>
+              <Text style={styles.methodText}>🍎 Apple Pay</Text>
             </View>
 
             <View style={styles.method}>
-              <Text style={styles.methodText}>
-                🟢 Google Pay
-              </Text>
+              <Text style={styles.methodText}>🟢 Google Pay</Text>
             </View>
           </View>
 
           <Text style={styles.note}>
-            All payments are encrypted and securely
-            processed by Stripe.
+            All payments are encrypted and securely processed by Stripe.
           </Text>
         </View>
       </ScrollView>
@@ -358,9 +304,9 @@ const openPaymentSheet = async () => {
 export default function PaymentScreen() {
   return (
     <StripeProvider
-        publishableKey={STRIPE_CONFIG.publishableKey}
-        merchantIdentifier="merchant.com.app.dooro"
-        urlScheme="com.app.dooro"
+      publishableKey={STRIPE_CONFIG.publishableKey}
+      merchantIdentifier="merchant.com.app.dooro"
+      urlScheme="com.app.dooro"
     >
       <PaymentScreenContent />
     </StripeProvider>

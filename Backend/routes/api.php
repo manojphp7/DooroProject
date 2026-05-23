@@ -144,6 +144,7 @@ Route::get('/plans', function () {
             "price" => "£100",
             "subtitle" => "No parts replacement",
             "icon" => "🛠️",
+            "duration"=> "12 months",
             "features" => [
                 "Shutter damage protection",
                 "24/7 claims support",
@@ -157,6 +158,7 @@ Route::get('/plans', function () {
             "price" => "£250",
             "subtitle" => "Parts & labour included",
             "icon" => "🛡️",
+            "duration"=> "12 months",
             "features" => [
                 "Everything in Basic",
                 "Full parts replacement",

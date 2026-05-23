@@ -1,20 +1,35 @@
 import { Typography } from "@/theme/typography";
+import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 type Props = {
   title: string;
   subtitle?: string;
+
   showBack?: boolean;
-  rightAction?: React.ReactNode;
+  showHome?: boolean;
+
+  rightIcon?: keyof typeof Ionicons.glyphMap;
+
+  onRightPress?: () => void;
 };
 
 export default function AppHeader({
   title,
   subtitle,
+
   showBack = true,
-  rightAction,
+  showHome = false,
+
+  rightIcon,
+  onRightPress,
 }: Props) {
   return (
     <LinearGradient
@@ -27,17 +42,65 @@ export default function AppHeader({
       <View style={styles.circle2} />
 
       {/* TOP ROW */}
+      <View style={styles.topRow}>
+        <View style={styles.leftActions}>
+          {showBack && (
+            <TouchableOpacity
+              style={styles.iconButton}
+              activeOpacity={0.85}
+              onPress={() => router.back()}
+            >
+              <Ionicons
+                name="arrow-back"
+                size={20}
+                color="#fff"
+              />
+            </TouchableOpacity>
+          )}
 
+          {showHome && (
+            <TouchableOpacity
+              style={styles.iconButton}
+              activeOpacity={0.85}
+              onPress={() => router.replace("/home")}
+            >
+              <Ionicons
+                name="home-outline"
+                size={20}
+                color="#fff"
+              />
+            </TouchableOpacity>
+          )}
+        </View>
+      </View>
 
       {/* CONTENT */}
       <View style={styles.contentRow}>
         <View style={{ flex: 1 }}>
-          {!!subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
+          {!!subtitle && (
+            <Text style={styles.subtitle}>
+              {subtitle}
+            </Text>
+          )}
 
-          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.title}>
+            {title}
+          </Text>
         </View>
 
-        {rightAction}
+        {!!rightIcon && (
+          <TouchableOpacity
+            style={styles.actionButton}
+            activeOpacity={0.85}
+            onPress={onRightPress}
+          >
+            <Ionicons
+              name={rightIcon}
+              size={22}
+              color="#fff"
+            />
+          </TouchableOpacity>
+        )}
       </View>
     </LinearGradient>
   );
@@ -45,9 +108,9 @@ export default function AppHeader({
 
 const styles = StyleSheet.create({
   header: {
+    height: 185, // FIXED HEIGHT
     paddingTop: 50,
     paddingHorizontal: 22,
-    paddingBottom: 28,
     borderBottomLeftRadius: 28,
     borderBottomRightRadius: 28,
     overflow: "hidden",
@@ -74,16 +137,22 @@ const styles = StyleSheet.create({
   },
 
   topRow: {
+    height: 40,
+    justifyContent: "center",
+  },
+
+  leftActions: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
+    gap: 10,
   },
 
   contentRow: {
-    marginTop: 30,
+    flex: 1,
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "flex-end",
+    justifyContent: "space-between",
+    paddingBottom: 24,
   },
 
   title: {
@@ -91,28 +160,17 @@ const styles = StyleSheet.create({
     fontFamily: Typography.fontFamily.bold,
     marginTop: 4,
     fontSize: 24,
-  lineHeight: 30,
-  letterSpacing: -0.3,
+    lineHeight: 30,
+    letterSpacing: -0.3,
   },
 
   subtitle: {
-    color: "rgba(255,255,255,0.8)",
+    color: "rgba(255,255,255,0.82)",
     fontSize: 14,
     fontFamily: Typography.fontFamily.regular,
   },
 
-  logo: {
-    color: "#fff",
-    fontSize: 28,
-    fontFamily: Typography.fontFamily.bold,
-  },
-
-  logoTm: {
-    fontSize: 10,
-    color: "rgba(255,255,255,0.7)",
-  },
-
-  backButton: {
+  iconButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
@@ -121,9 +179,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  backText: {
-    color: "#fff",
-    fontSize: 18,
-    fontFamily: Typography.fontFamily.bold,
+  actionButton: {
+    width: 52,
+    height: 52,
+    borderRadius: 18,
+    backgroundColor: "rgba(255,255,255,0.16)",
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.15)",
   },
 });

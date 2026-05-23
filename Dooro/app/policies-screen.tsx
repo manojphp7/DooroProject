@@ -1,8 +1,9 @@
 import { API_CONFIG } from "@/config/api";
-import ProgressHeader from "@/components/ProgressHeader";
+import AppHeader from "@/components/AppHeader";
 import { Typography } from "@/theme/typography";
 import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
+import { router } from "expo-router";
 import {
   ActivityIndicator,
   FlatList,
@@ -10,6 +11,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 
@@ -35,18 +37,14 @@ export default function PoliciesScreen() {
 
   const fetchPolicies = async () => {
     try {
-      const token =
-        await SecureStore.getItemAsync("token");
+      const token = await SecureStore.getItemAsync("token");
 
-      const response = await fetch(
-        API_CONFIG.MY_POLICIES,
-        {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(API_CONFIG.MY_POLICIES, {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const data = await response.json();
 
@@ -71,7 +69,7 @@ export default function PoliciesScreen() {
 
   const getStatusStyle = (status: string) => {
     switch (status) {
-      case "success":
+      case "paid":
         return {
           bg: "#dcfce7",
           text: "#15803d",
@@ -95,25 +93,22 @@ export default function PoliciesScreen() {
   };
 
   const renderPolicy = ({ item }: { item: Policy }) => {
-    const status = getStatusStyle(
-      item.payment_status
-    );
+    const status = getStatusStyle(item.payment_status);
 
     return (
-      <View style={styles.card}>
-        <View style={styles.topRow}>
-          <View style={styles.iconWrap}>
-            <Text style={styles.icon}>🛡️</Text>
+      <TouchableOpacity activeOpacity={0.9} style={styles.policyCard}>
+        {/* TOP */}
+        <View style={styles.policyTop}>
+          <View style={styles.policyIconWrap}>
+            <Text style={styles.policyIcon}>🛡️</Text>
           </View>
 
-          <View style={styles.content}>
-            <Text style={styles.shopName}>
+          <View style={{ flex: 1 }}>
+            <Text numberOfLines={1} style={styles.shopName}>
               {item.shop_name}
             </Text>
 
-            <Text style={styles.planName}>
-              {item.plan_name}
-            </Text>
+            <Text style={styles.planName}>{item.plan_name}</Text>
           </View>
 
           <View
@@ -137,40 +132,44 @@ export default function PoliciesScreen() {
           </View>
         </View>
 
-        <View style={styles.divider} />
+        {/* INFO */}
+        <View style={styles.infoGrid}>
+          <View style={styles.infoBox}>
+            <Text style={styles.infoLabel}>Premium</Text>
 
-        <View style={styles.bottomRow}>
-          <View>
-            <Text style={styles.label}>
-              Coverage
-            </Text>
-
-            <Text style={styles.value}>
-              1 Year
-            </Text>
+            <Text style={styles.amount}>£{item.payment_amount}</Text>
           </View>
 
-          <View>
-            <Text style={styles.label}>
-              Amount Paid
-            </Text>
+          <View style={styles.infoBox}>
+            <Text style={styles.infoLabel}>Coverage</Text>
 
-            <Text style={styles.amount}>
-              £{item.payment_amount}
-            </Text>
+            <Text style={styles.infoValue}>1 Year</Text>
           </View>
         </View>
-      </View>
+
+        {/* DATE */}
+        <View style={styles.dateRow}>
+          <Text style={styles.dateIcon}>📅</Text>
+
+          <Text style={styles.dateText}>
+            Purchased on{" "}
+            {item.created_at
+              ? new Date(item.created_at).toLocaleDateString("en-GB", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                })
+              : "--"}
+          </Text>
+        </View>
+      </TouchableOpacity>
     );
   };
 
   if (loading) {
     return (
       <View style={styles.loaderContainer}>
-        <ActivityIndicator
-          size="large"
-          color="#e0377a"
-        />
+        <ActivityIndicator size="large" color="#e0377a" />
       </View>
     );
   }
@@ -179,10 +178,12 @@ export default function PoliciesScreen() {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
 
-      <ProgressHeader
-        step={3}
+      <AppHeader
         title="My Policies"
-        subtitle="Manage your shutter insurance policies"
+        subtitle="Manage your policies"
+        showBack={false}
+        rightIcon="home-outline"
+        onRightPress={() => router.replace("/home")}
       />
 
       <FlatList
@@ -200,17 +201,12 @@ export default function PoliciesScreen() {
         }
         ListEmptyComponent={
           <View style={styles.emptyWrap}>
-            <Text style={styles.emptyIcon}>
-              📄
-            </Text>
+            <Text style={styles.emptyIcon}>📄</Text>
 
-            <Text style={styles.emptyTitle}>
-              No Policies Found
-            </Text>
+            <Text style={styles.emptyTitle}>No Policies Found</Text>
 
             <Text style={styles.emptyText}>
-              Your purchased insurance policies
-              will appear here.
+              Your purchased insurance policies will appear here.
             </Text>
           </View>
         }
@@ -222,100 +218,109 @@ export default function PoliciesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff7fb",
+    backgroundColor: "#f8f7ff",
   },
 
   loaderContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#fff7fb",
+    backgroundColor: "#f8f7ff",
   },
 
   list: {
     paddingHorizontal: 20,
-    paddingTop: 24,
+    paddingTop: 20,
     paddingBottom: 40,
   },
 
-  card: {
+  policyCard: {
     backgroundColor: "#fff",
-    borderRadius: 28,
-    padding: 22,
+    borderRadius: 24,
+    padding: 18,
+    marginBottom: 16,
+
     borderWidth: 1,
-    borderColor: "#f3d5e3",
-    marginBottom: 18,
+    borderColor: "#f3dce7",
+
+    shadowColor: "#000",
+    shadowOpacity: 0.04,
+    shadowRadius: 10,
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+
+    elevation: 2,
   },
 
-  topRow: {
+  policyTop: {
     flexDirection: "row",
     alignItems: "center",
   },
 
-  iconWrap: {
-    width: 64,
-    height: 64,
-    borderRadius: 22,
+  policyIconWrap: {
+    width: 56,
+    height: 56,
+    borderRadius: 18,
     backgroundColor: "#e0377a",
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 16,
+    marginRight: 14,
   },
 
-  icon: {
-    fontSize: 30,
-  },
-
-  content: {
-    flex: 1,
+  policyIcon: {
+    fontSize: 26,
   },
 
   shopName: {
     color: "#111827",
     fontFamily: Typography.fontFamily.bold,
-    fontSize: 18,
-    letterSpacing: -0.5,
+    fontSize: 17,
+    letterSpacing: -0.3,
   },
 
   planName: {
     color: "#6b7280",
     fontFamily: Typography.fontFamily.medium,
-    fontSize: 14,
+    fontSize: 13,
     marginTop: 4,
   },
 
   statusBadge: {
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
     borderRadius: 999,
   },
 
   statusText: {
     fontFamily: Typography.fontFamily.bold,
-    fontSize: 12,
+    fontSize: 11,
     letterSpacing: 0.3,
   },
 
-  divider: {
-    height: 1,
-    backgroundColor: "#f1f5f9",
-    marginVertical: 20,
-  },
-
-  bottomRow: {
+  infoGrid: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    gap: 12,
+    marginTop: 18,
   },
 
-  label: {
+  infoBox: {
+    flex: 1,
+    backgroundColor: "#fff5f9",
+    borderRadius: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 14,
+  },
+
+  infoLabel: {
     color: "#6b7280",
     fontFamily: Typography.fontFamily.medium,
-    fontSize: 13,
+    fontSize: 12,
     marginBottom: 6,
   },
 
-  value: {
+  infoValue: {
     color: "#111827",
     fontFamily: Typography.fontFamily.bold,
     fontSize: 15,
@@ -324,18 +329,37 @@ const styles = StyleSheet.create({
   amount: {
     color: "#e0377a",
     fontFamily: Typography.fontFamily.bold,
-    fontSize: 24,
-    letterSpacing: -0.8,
+    fontSize: 20,
+  },
+
+  dateRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 16,
+    paddingTop: 14,
+    borderTopWidth: 1,
+    borderTopColor: "#f5e6ee",
+  },
+
+  dateIcon: {
+    fontSize: 14,
+    marginRight: 8,
+  },
+
+  dateText: {
+    color: "#6b7280",
+    fontFamily: Typography.fontFamily.medium,
+    fontSize: 12.5,
   },
 
   emptyWrap: {
     alignItems: "center",
-    marginTop: 100,
+    marginTop: 120,
     paddingHorizontal: 30,
   },
 
   emptyIcon: {
-    fontSize: 52,
+    fontSize: 56,
     marginBottom: 18,
   },
 
@@ -354,4 +378,3 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
 });
-

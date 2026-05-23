@@ -54,7 +54,7 @@ const handleContinue = async () => {
     // SAVE SELECTED PLAN
     const planData = {
       plan_name: selectedPlan.title,
-
+      plan_id:selectedPlan.id,
       payment_amount: Number(
         selectedPlan.price.replace(/[^\d]/g, "")
       ),

@@ -152,7 +152,7 @@ export default function ShopDetailsScreen() {
         <Animated.View
           style={[
             styles.fieldWrapper,
-            errors.shopName && {
+            errors.address && {
               transform: [{ translateX: shakeAnim }],
             },
           ]}
@@ -185,7 +185,7 @@ export default function ShopDetailsScreen() {
         <Animated.View
           style={[
             styles.fieldWrapper,
-            errors.shopName && {
+            errors.mobile && {
               transform: [{ translateX: shakeAnim }],
             },
           ]}
@@ -217,7 +217,7 @@ export default function ShopDetailsScreen() {
         <Animated.View
           style={[
             styles.fieldWrapper,
-            errors.shopName && {
+            errors.otherShopType && {
               transform: [{ translateX: shakeAnim }],
             },
           ]}

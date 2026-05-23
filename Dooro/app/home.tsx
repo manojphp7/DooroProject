@@ -39,15 +39,13 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
+
       <AppHeader
         title={user?.name ?? "Dooro"}
         subtitle="Welcome Back 👋"
         showBack={false}
-        rightAction={
-          <TouchableOpacity onPress={logout} style={styles.logoutBtn}>
-            <Ionicons name="settings-outline" size={22} color="#fff" />
-          </TouchableOpacity>
-        }
+        rightIcon="add"
+        onRightPress={() => router.push("/shop-details")}
       />
 
       <ScrollView
@@ -98,7 +96,11 @@ export default function HomeScreen() {
             <Text style={styles.actionSub}>Protect Another Shop</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionCard} activeOpacity={0.85}  onPress={() => router.push("/choose-plan")}>
+          <TouchableOpacity
+            style={styles.actionCard}
+            activeOpacity={0.85}
+            onPress={() => router.push("/claim-screen")}
+          >
             <LinearGradient
               colors={["#c42d6a", "#e8558e"]}
               style={styles.actionIconWrap}
@@ -110,7 +112,11 @@ export default function HomeScreen() {
             <Text style={styles.actionSub}>Track your claim status</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionCard} activeOpacity={0.85} onPress={() => router.push("/upload-photos")}>
+          <TouchableOpacity
+            style={styles.actionCard}
+            activeOpacity={0.85}
+            onPress={() => {}}
+          >
             <LinearGradient
               colors={["#c42d6a", "#e8558e"]}
               style={styles.actionIconWrap}
@@ -121,6 +127,8 @@ export default function HomeScreen() {
             <Text style={styles.actionTitle}>Support</Text>
             <Text style={styles.actionSub}>Get instant help</Text>
           </TouchableOpacity>
+
+       
         </View>
 
         {/* Coverage */}
@@ -178,7 +186,7 @@ export default function HomeScreen() {
         </View>
 
         {/* CTA */}
-        <TouchableOpacity activeOpacity={0.85}>
+        <TouchableOpacity activeOpacity={0.85} onPress={() => router.push("/claim-screen")}>
           <LinearGradient
             colors={["#c42d6a", "#e8558e"]}
             start={{ x: 0, y: 0 }}

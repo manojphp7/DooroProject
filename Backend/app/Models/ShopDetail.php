@@ -21,5 +21,6 @@ class ShopDetail extends Model
         'plan_name',
         'payment_amount',
         'payment_status',
+        'payment_intent_id',
     ];
 }
