@@ -4,6 +4,7 @@ import { Typography } from "@/theme/typography";
 import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
 import { router } from "expo-router";
+
 import {
   ActivityIndicator,
   FlatList,
@@ -17,11 +18,23 @@ import {
 
 type Policy = {
   id: number;
-  shop_name: string;
-  plan_name: string;
-  payment_amount: string;
+  policy_number: string;
+  status: string;
   payment_status: string;
+  premium_amount: string;
   created_at?: string;
+
+  plan: {
+    id: number;
+    title: string;
+    symbol: string;
+    duration_months: number;
+  };
+
+  shop: {
+    id: number;
+    shop_name: string;
+  };
 };
 
 export default function PoliciesScreen() {
@@ -47,6 +60,8 @@ export default function PoliciesScreen() {
       });
 
       const data = await response.json();
+
+      console.log(data);
 
       if (!response.ok) {
         return;
@@ -105,10 +120,10 @@ export default function PoliciesScreen() {
 
           <View style={{ flex: 1 }}>
             <Text numberOfLines={1} style={styles.shopName}>
-              {item.shop_name}
+              {item.shop?.shop_name}
             </Text>
 
-            <Text style={styles.planName}>{item.plan_name}</Text>
+            <Text style={styles.planName}>{item.plan?.title}</Text>
           </View>
 
           <View
@@ -137,14 +152,41 @@ export default function PoliciesScreen() {
           <View style={styles.infoBox}>
             <Text style={styles.infoLabel}>Premium</Text>
 
-            <Text style={styles.amount}>£{item.payment_amount}</Text>
+            <Text style={styles.amount}>£{item.premium_amount}</Text>
           </View>
 
           <View style={styles.infoBox}>
             <Text style={styles.infoLabel}>Coverage</Text>
 
-            <Text style={styles.infoValue}>1 Year</Text>
+            <Text style={styles.infoValue}>
+              {item.plan?.duration_months || 12} Months
+            </Text>
           </View>
+        </View>
+
+        {/* POLICY NUMBER + CLAIM */}
+        <View style={styles.policyBottomRow}>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.policyLabel}>Policy Number</Text>
+
+            <Text style={styles.policyNumber}>{item.policy_number}</Text>
+          </View>
+
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={styles.claimBtn}
+            onPress={() =>
+              router.push({
+                pathname: "/create-claim",
+                params: {
+                  policy_id: item.id.toString(),
+                  policy_number: item.policy_number,
+                },
+              })
+            }
+          >
+            <Text style={styles.claimBtnText}>Create Claim</Text>
+          </TouchableOpacity>
         </View>
 
         {/* DATE */}
@@ -330,6 +372,40 @@ const styles = StyleSheet.create({
     color: "#e0377a",
     fontFamily: Typography.fontFamily.bold,
     fontSize: 20,
+  },
+
+  policyBottomRow: {
+    marginTop: 18,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
+  },
+
+  policyLabel: {
+    color: "#6b7280",
+    fontFamily: Typography.fontFamily.medium,
+    fontSize: 12,
+    marginBottom: 4,
+  },
+
+  policyNumber: {
+    color: "#111827",
+    fontFamily: Typography.fontFamily.bold,
+    fontSize: 14,
+  },
+
+  claimBtn: {
+    backgroundColor: "#e0377a",
+    paddingHorizontal: 16,
+    paddingVertical: 11,
+    borderRadius: 14,
+  },
+
+  claimBtnText: {
+    color: "#fff",
+    fontFamily: Typography.fontFamily.bold,
+    fontSize: 13,
   },
 
   dateRow: {

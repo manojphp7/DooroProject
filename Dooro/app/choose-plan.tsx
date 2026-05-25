@@ -18,8 +18,11 @@ type Plan = {
   id: string;
   title: string;
   price: string;
+  currency: string;
+  symbol:string;
   subtitle: string;
   icon: string;
+  duration_months:number;
   features: string[];
 };
 
@@ -46,7 +49,6 @@ export default function ChoosePlanScreen() {
 
 const handleContinue = async () => {
   try {
-    console.log("Init")
     if (!selectedPlan) {
       return;
     }
@@ -54,9 +56,11 @@ const handleContinue = async () => {
     // SAVE SELECTED PLAN
     const planData = {
       plan_name: selectedPlan.title,
-      plan_id:selectedPlan.id,
+      plan_id: selectedPlan.id,
+      symbol:selectedPlan.symbol,
+      currency:selectedPlan.currency,
       payment_amount: Number(
-        selectedPlan.price.replace(/[^\d]/g, "")
+        selectedPlan.price
       ),
     };
 
@@ -65,104 +69,49 @@ const handleContinue = async () => {
       JSON.stringify(planData)
     );
 
-    // GET SAVED DATA
-    const savedShop =
-      await SecureStore.getItemAsync(
-        "shop_details"
-      );
-
-    const savedImages =
-      await SecureStore.getItemAsync(
-        "shop_images"
-      );
-
-    const savedPlan =
-      await SecureStore.getItemAsync(
-        "selected_plan"
-      );
-
+    // GET TOKEN + SHOP ID
     const token =
-      await SecureStore.getItemAsync("token");
+      await SecureStore.getItemAsync(
+        "token"
+      );
 
-    if (
-      !savedShop ||
-      !savedImages ||
-      !savedPlan ||
-      !token
-    ) {
+    const shopId =
+      await SecureStore.getItemAsync(
+        "shop_id"
+      );
+
+    if (!token || !shopId) {
       return;
     }
 
-    const shopData = JSON.parse(savedShop);
-
-    const imageData = JSON.parse(savedImages);
-
-    const finalPlan = JSON.parse(savedPlan);
-
-    // FORMDATA
-    const formData = new FormData();
-
-    // SHOP
-    formData.append(
-      "shop_name",
-      shopData.shop_name
-    );
-
-    formData.append(
-      "address",
-      shopData.address
-    );
-
-    formData.append(
-      "mobile",
-      shopData.mobile
-    );
-
-    formData.append(
-      "shop_type",
-      shopData.shop_type
-    );
-
-    // PLAN
-    formData.append(
-      "plan_name",
-      finalPlan.plan_name
-    );
-
-    formData.append(
-      "payment_amount",
-      String(finalPlan.payment_amount)
-    );
-
-    // IMAGES
-    formData.append("front_image", {
-      uri: imageData.front_image,
-      name: "front.jpg",
-      type: "image/jpeg",
-    } as any);
-
-    formData.append("closeup_image", {
-      uri: imageData.closeup_image,
-      name: "closeup.jpg",
-      type: "image/jpeg",
-    } as any);
-
-    formData.append("serial_image", {
-      uri: imageData.serial_image,
-      name: "serial.jpg",
-      type: "image/jpeg",
-    } as any);
-
-    // API CALL
+    // CREATE POLICY
     const response = await fetch(
-      API_CONFIG.ADD_SHOP,
+      API_CONFIG.CREATE_POLICY,
       {
         method: "POST",
+
         headers: {
+          "Content-Type": "application/json",
           Accept: "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: formData,
+
+        body: JSON.stringify({
+          shop_id: shopId,
+
+          plan_name:
+            selectedPlan.title,
+
+          plan_id:
+            selectedPlan.id,
+
+          payment_amount: Number(
+            selectedPlan.price
+          ),
+
+          duration_months:
+            selectedPlan.duration_months,
+        }),
       }
     );
 
@@ -182,6 +131,7 @@ const handleContinue = async () => {
 
     // NEXT SCREEN
     router.push("/payment-screen");
+
   } catch (error) {
     console.log(error);
   }
@@ -231,7 +181,7 @@ const handleContinue = async () => {
                     <Text style={styles.planTitle}>{plan.title}</Text>
 
                     <Text style={styles.planPrice}>
-                      {plan.price}
+                     {plan.symbol}{plan.price}
                       <Text style={styles.planMonth}>/year</Text>
                     </Text>
                   </View>

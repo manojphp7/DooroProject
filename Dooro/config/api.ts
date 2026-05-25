@@ -22,17 +22,21 @@ export const API_CONFIG = {
   RESET_PASSWORD: `${API_BASE_URL}/reset-password`, 
   PLANS: `${API_BASE_URL}/plans`, 
   ADD_SHOP: `${API_BASE_URL}/add-shop`,
+  CREATE_POLICY: `${API_BASE_URL}/create-policy`,
   CREATE_PAYMENT:
     `${API_BASE_URL}/create-payment`,
   PAYMENT_SUCCESS:
     `${API_BASE_URL}/payment-success`,
   PAYMENT_FAILED:
     `${API_BASE_URL}/payment-failed`,
-
   MY_POLICIES:
     `${API_BASE_URL}/my-policies`,
   
-
+  GET_CLAIMS:
+    `${API_BASE_URL}/get-claims`,
+  CREATE_CLAIM:
+    `${API_BASE_URL}/create-claim`,
+  
   
 };
 

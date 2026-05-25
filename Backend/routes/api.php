@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ShopDetailController;
+use App\Http\Controllers\Api\ClaimController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Events\Verified;
@@ -141,10 +142,12 @@ Route::get('/plans', function () {
         [
             "id" => "basic",
             "title" => "Basic Cover",
-            "price" => "£100",
+            "price"=> 100,
+            "currency"=> "GBP",
+            "symbol"=> "£",
             "subtitle" => "No parts replacement",
             "icon" => "🛠️",
-            "duration"=> "12 months",
+            "duration_months"=> 12,
             "features" => [
                 "Shutter damage protection",
                 "24/7 claims support",
@@ -155,10 +158,12 @@ Route::get('/plans', function () {
         [
             "id" => "full",
             "title" => "Full Cover",
-            "price" => "£250",
+            "price"=> 250,
+            "currency"=> "GBP",
+            "symbol"=> "£",
             "subtitle" => "Parts & labour included",
             "icon" => "🛡️",
-            "duration"=> "12 months",
+            "duration_months"=> 12,
             "features" => [
                 "Everything in Basic",
                 "Full parts replacement",
@@ -174,6 +179,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post(
         '/add-shop',
         [ShopDetailController::class, 'add']
+    );
+
+    Route::post(
+    '/create-policy',
+    [ShopDetailController::class, 'createPolicy']
     );
 
     Route::post(
@@ -197,5 +207,13 @@ Route::middleware('auth:sanctum')->group(function () {
     '/my-policies',
     [ShopDetailController::class, 'myPolicies']
     );
+
+    Route::post('/create-claim', [ClaimController::class, 'store']);
+
+    Route::get('/get-claims', [ClaimController::class, 'getClaims']);
+
+    Route::get('/claims/{id}', [ClaimController::class, 'show']);
+
+    
 });
 

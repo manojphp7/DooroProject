@@ -3,6 +3,7 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { router } from "expo-router";
 import { useState } from "react";
 import {
   ActivityIndicator,
@@ -270,14 +271,13 @@ export default function RegisterScreen({ navigation }: any) {
           <View style={styles.signupRow}>
             <Text style={styles.signupText}>Already have an account?</Text>
 
-            <TouchableOpacity onPress={() => navigation?.goBack()}>
+            <TouchableOpacity onPress={() => router.back()}>
               <Text style={styles.signupLink}> Sign In</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
 
-      <Stack.Screen options={{ headerShown: false }} />
     </View>
   );
 }

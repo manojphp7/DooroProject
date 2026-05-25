@@ -127,54 +127,121 @@ export default function UploadPhotosScreen() {
     }
   };
 
-const handleContinue = async () => {
-  const newErrors = {
-    front: !frontImage,
-    closeup: !closeupImage,
-    serial: !serialImage,
-  };
-
-  setErrors(newErrors);
-
-  if (newErrors.front || newErrors.closeup || newErrors.serial) {
-    setTopError("Please upload all required photos");
-
-    triggerShake();
-
-    return;
-  }
-
-  try {
-    setLoading(true);
-
-    setTopError("");
-
-    // SAVE IMAGES LOCALLY
-    const imageData = {
-      front_image: frontImage,
-      closeup_image: closeupImage,
-      serial_image: serialImage,
+  const handleContinue = async () => {
+    const newErrors = {
+      front: !frontImage,
+      closeup: !closeupImage,
+      serial: !serialImage,
     };
 
-    await SecureStore.setItemAsync(
-      "shop_images",
-      JSON.stringify(imageData)
-    );
+    setErrors(newErrors);
 
-    console.log("Images saved locally");
+    if (newErrors.front || newErrors.closeup || newErrors.serial) {
+      setTopError("Please upload all required photos");
 
-    // NEXT SCREEN
-    router.push("/choose-plan");
-  } catch (error) {
-    console.log(error);
+      triggerShake();
 
-    setTopError("Something went wrong");
+      return;
+    }
 
-    triggerShake();
-  } finally {
-    setLoading(false);
-  }
-};
+    try {
+      setLoading(true);
+
+      setTopError("");
+
+      // SAVE IMAGES LOCALLY
+      const imageData = {
+        front_image: frontImage,
+        closeup_image: closeupImage,
+        serial_image: serialImage,
+      };
+
+      await SecureStore.setItemAsync("shop_images", JSON.stringify(imageData));
+
+      // GET SHOP DETAILS
+      const savedShop = await SecureStore.getItemAsync("shop_details");
+
+      const token = await SecureStore.getItemAsync("token");
+
+      if (!savedShop || !token) {
+        setTopError("Missing shop details");
+
+        return;
+      }
+
+      const shopData = JSON.parse(savedShop);
+
+      // FORMDATA
+      const formData = new FormData();
+
+      // SHOP DETAILS
+      formData.append("shop_name", shopData.shop_name);
+
+      formData.append("address", shopData.address);
+
+      formData.append("mobile", shopData.mobile);
+
+      formData.append("shop_type", shopData.shop_type);
+
+      // IMAGES
+      formData.append("front_image", {
+        uri: frontImage,
+        name: "front.jpg",
+        type: "image/jpeg",
+      } as any);
+
+      formData.append("closeup_image", {
+        uri: closeupImage,
+        name: "closeup.jpg",
+        type: "image/jpeg",
+      } as any);
+
+      formData.append("serial_image", {
+        uri: serialImage,
+        name: "serial.jpg",
+        type: "image/jpeg",
+      } as any);
+
+      // CREATE SHOP
+      const response = await fetch(API_CONFIG.ADD_SHOP, {
+        method: "POST",
+
+        headers: {
+          Accept: "application/json",
+
+          Authorization: `Bearer ${token}`,
+        },
+
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      console.log(data);
+
+      if (!response.ok) {
+        setTopError(data.message || "Failed to create shop");
+
+        triggerShake();
+
+        return;
+      }
+
+      // SAVE SHOP ID
+      await SecureStore.setItemAsync("shop_id", String(data.shop.id));
+
+      // NEXT SCREEN
+      router.push("/choose-plan");
+    } catch (error) {
+      console.log(error);
+
+      setTopError("Something went wrong");
+
+      triggerShake();
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const renderUploadCard = (
     title: string,

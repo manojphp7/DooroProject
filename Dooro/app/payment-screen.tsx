@@ -30,10 +30,11 @@ function PaymentScreenContent() {
 
   const getPlan = async () => {
     const savedPlan = await SecureStore.getItemAsync("selected_plan");
-const policyId = await SecureStore.getItemAsync("policy_id");
-console.log("policyId" + policyId)
+    const policyId = await SecureStore.getItemAsync("policy_id");
+    console.log("policy_id" + policyId);
     if (savedPlan) {
       setPlan(JSON.parse(savedPlan));
+      console.log(savedPlan);
     }
   };
 
@@ -155,7 +156,7 @@ console.log("policyId" + policyId)
         return;
       }
 
-      console.log(paymentData.paymentIntentId)
+      console.log(paymentData.paymentIntentId);
 
       const { error } = await presentPaymentSheet();
 
@@ -183,8 +184,9 @@ console.log("policyId" + policyId)
         return;
       }
 
-      // SUCCESS
-     const response = await fetch(API_CONFIG.PAYMENT_SUCCESS, {
+
+
+      const response = await fetch(API_CONFIG.PAYMENT_SUCCESS, {
         method: "POST",
 
         headers: {
@@ -198,12 +200,18 @@ console.log("policyId" + policyId)
         }),
       });
 
-const data = await response.json();
+      const data = await response.json();
 
-console.log(data);
+      console.log(data);
 
-     // await clearTempData();
-      //router.replace("/policies-screen");
+      if (!response.ok) {
+        Alert.alert("Error", data.message || "Payment update failed");
+
+        return;
+      }
+
+      await clearTempData();
+      router.replace("/policies-screen");
     } catch (error) {
       console.log(error);
 
@@ -252,7 +260,10 @@ console.log(data);
           <View style={styles.totalRow}>
             <Text style={styles.totalLabel}>Total Amount</Text>
 
-            <Text style={styles.totalAmount}>£{plan?.payment_amount}</Text>
+            <Text style={styles.totalAmount}>
+              {plan?.symbol}
+              {plan?.payment_amount}
+            </Text>
           </View>
         </View>
 
@@ -292,7 +303,8 @@ console.log(data);
             <ActivityIndicator color="#fff" />
           ) : (
             <Text style={styles.payButtonText}>
-              Pay £{plan?.payment_amount}
+              Pay {plan?.symbol}
+              {plan?.payment_amount}
             </Text>
           )}
         </TouchableOpacity>
