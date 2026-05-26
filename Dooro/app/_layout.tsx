@@ -60,6 +60,8 @@ export default function RootLayout() {
       <Stack.Screen name="payment-screen" options={{ headerShown: false }} />
       <Stack.Screen name="claim-screen" options={{ headerShown: false }} />
       <Stack.Screen name="create-claim" options={{ headerShown: false }} />
+      <Stack.Screen name="claim-details/[id]" options={{ headerShown: false }}
+    />
     </Stack>
   );
 }

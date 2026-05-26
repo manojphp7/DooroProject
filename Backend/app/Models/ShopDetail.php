@@ -26,4 +26,9 @@ class ShopDetail extends Model
 {
     return $this->hasMany(Policy::class, 'shop_detail_id');
 }
+
+public function user()
+{
+    return $this->belongsTo(User::class);
+}
 }

@@ -116,10 +116,12 @@ export default function CreateClaimScreen() {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
+          "Content-Type": "multipart/form-data",
         },
         body: formData,
       });
 
+      
       const data = await response.json();
 
       console.log(data);

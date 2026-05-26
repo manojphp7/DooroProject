@@ -115,7 +115,7 @@ export default function PoliciesScreen() {
         {/* TOP */}
         <View style={styles.policyTop}>
           <View style={styles.policyIconWrap}>
-            <Text style={styles.policyIcon}>🛡️</Text>
+            <Text style={styles.policyIcon}>{item.plan?.title}🛠️ 🛡️</Text>
           </View>
 
           <View style={{ flex: 1 }}>

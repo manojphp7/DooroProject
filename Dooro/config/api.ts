@@ -37,7 +37,8 @@ export const API_CONFIG = {
   CREATE_CLAIM:
     `${API_BASE_URL}/create-claim`,
   
-  
+  CLAIM_DETAIL:
+    `${API_BASE_URL}/claim-detail`,
 };
 
 

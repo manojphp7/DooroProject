@@ -39,4 +39,5 @@ class Claim extends Model
     {
         return $this->hasMany(ClaimImage::class, 'claim_id');
     }
+    
 }

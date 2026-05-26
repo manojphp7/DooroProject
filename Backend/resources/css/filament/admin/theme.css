@@ -1,0 +1,11 @@
+.fi-sidebar {
+    background: #3a0a1e;
+}
+
+.fi-sidebar-item-active a {
+    background: #c42d6a !important;
+}
+
+.fi-topbar {
+    background: #ffffff;
+}

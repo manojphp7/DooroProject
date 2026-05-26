@@ -214,6 +214,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/claims/{id}', [ClaimController::class, 'show']);
 
-    
+    Route::get('/claim-detail/{id}',[ClaimController::class, 'claimDetail']);
 });
 

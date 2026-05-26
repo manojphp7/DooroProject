@@ -1,6 +1,7 @@
 import AppHeader from "@/components/AppHeader";
 import { API_CONFIG } from "@/config/api";
 import { Typography } from "@/theme/typography";
+import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
 import {
@@ -11,6 +12,7 @@ import {
   Image,
   ScrollView,
   StatusBar,
+  TouchableOpacity,
 } from "react-native";
 
 export default function MyClaimsScreen() {
@@ -60,16 +62,33 @@ export default function MyClaimsScreen() {
   };
 
   const renderItem = ({ item }: any) => {
-    return (
+  return (
+    <TouchableOpacity
+      activeOpacity={0.9}
+      onPress={() =>
+        router.push({
+          pathname: "/claim-details/[id]",
+          params: {
+            id: item.id.toString(),
+          },
+        })
+      }
+    >
       <View style={styles.card}>
         {/* HEADER */}
         <View style={styles.rowBetween}>
-          <Text style={styles.claimNo}>{item.claim_number}</Text>
+          <Text style={styles.claimNo}>
+            {item.claim_number}
+          </Text>
 
           <Text
             style={[
               styles.status,
-              { backgroundColor: getStatusColor(item.status) },
+              {
+                backgroundColor: getStatusColor(
+                  item.status
+                ),
+              },
             ]}
           >
             {item.status}
@@ -86,16 +105,26 @@ export default function MyClaimsScreen() {
         </Text>
 
         {/* IMAGES */}
-        {item.images?.length > 0 && (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {item.images.map((img: string, index: number) => (
-              <Image key={index} source={{ uri: img }} style={styles.image} />
-            ))}
+        {/* {item.images?.length > 0 && (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          >
+            {item.images.map(
+              (img: string, index: number) => (
+                <Image
+                  key={index}
+                  source={{ uri: img }}
+                  style={styles.image}
+                />
+              )
+            )}
           </ScrollView>
-        )}
+        )} */}
       </View>
-    );
-  };
+    </TouchableOpacity>
+  );
+};
 
   return (
     <View style={styles.container}>
@@ -177,7 +206,7 @@ const styles = StyleSheet.create({
 
   policy: {
     fontSize: 13,
-    color: "#9ca3af",
+    color: "#787b80",
     marginBottom: 10,
   },
 

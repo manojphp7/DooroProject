@@ -35,15 +35,15 @@ class ShopDetailController extends Controller
         // STORE IMAGES
         $frontImagePath = $request
             ->file('front_image')
-            ->store('shop-photos');
+            ->store('shop-photos', 'public');
 
         $closeupImagePath = $request
             ->file('closeup_image')
-            ->store('shop-photos');
+            ->store('shop-photos', 'public');
 
         $serialImagePath = $request
             ->file('serial_image')
-            ->store('shop-photos');
+            ->store('shop-photos', 'public');
 
         // CREATE SHOP
         $shop = ShopDetail::create([
