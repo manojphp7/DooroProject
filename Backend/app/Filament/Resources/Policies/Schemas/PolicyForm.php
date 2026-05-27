@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Filament\Resources\Policies\Schemas;
-
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -9,20 +8,26 @@ use Filament\Schemas\Schema;
 
 class PolicyForm
 {
+
+
     public static function configure(Schema $schema): Schema
     {
         return $schema
             ->components([
-                TextInput::make('shop_detail_id')
-                    ->required()
-                    ->numeric(),
-                TextInput::make('policy_number')
+   TextInput::make('shop_name')
+    ->label('Shop Name')
+    ->disabled()
+    ->dehydrated(false)
+    ->formatStateUsing(function ($record) {
+        return optional($record->shop)->shop_name;
+    }),
+                TextInput::make('policy_number')->disabled()
                     ->required(),
-                TextInput::make('plan_id')
+                TextInput::make('plan_id')->disabled()
                     ->required(),
-                TextInput::make('plan_name')
+                TextInput::make('plan_name')->disabled()
                     ->required(),
-                TextInput::make('premium_amount')
+                TextInput::make('premium_amount')->disabled()
                     ->required()
                     ->numeric(),
                 DatePicker::make('start_date'),
@@ -40,7 +45,7 @@ class PolicyForm
                     ->options(['pending' => 'Pending', 'paid' => 'Paid', 'failed' => 'Failed'])
                     ->default('pending')
                     ->required(),
-                TextInput::make('payment_intent_id')
+                TextInput::make('payment_intent_id')->disabled()
                     ->default(null),
             ]);
     }

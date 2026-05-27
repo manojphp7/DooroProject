@@ -18,6 +18,7 @@ import {
 
 type Policy = {
   id: number;
+  plan_name: string;
   policy_number: string;
   status: string;
   payment_status: string;
@@ -115,7 +116,9 @@ export default function PoliciesScreen() {
         {/* TOP */}
         <View style={styles.policyTop}>
           <View style={styles.policyIconWrap}>
-            <Text style={styles.policyIcon}>{item.plan?.title}🛠️ 🛡️</Text>
+            <Text style={styles.policyIcon}>
+          {item.plan_name === "Full Cover" ? "🛡️" : "🛠️"}
+        </Text>
           </View>
 
           <View style={{ flex: 1 }}>

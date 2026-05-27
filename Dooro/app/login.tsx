@@ -300,21 +300,14 @@ useEffect(() => {
                 <>
                   <Image
                     source={require("../assets/img/google.png")}
-                    style={{ width: 18, height: 18 }}
+                    style={{ width: 20, height: 20 }}
                     resizeMode="contain"
                   />
-                  <Text style={styles.socialText}>Google</Text>
+                  <Text style={styles.socialText}>Continue with Google</Text>
                 </>
               )}
             </TouchableOpacity>
-            <TouchableOpacity style={styles.socialBtn} activeOpacity={0.8}>
-              <Image
-                source={require("../assets/img/apple.png")}
-                style={{ width: 18, height: 18 }}
-                resizeMode="contain"
-              />
-              <Text style={styles.socialText}>Apple</Text>
-            </TouchableOpacity>
+         
           </View>
 
           {/* Sign Up */}
@@ -434,19 +427,26 @@ const styles = StyleSheet.create({
   },
   dividerLine: { flex: 1, height: 1, backgroundColor: "#e5e7eb" },
   dividerText: { fontSize: 11, color: "#6b7280" },
-  socialRow: { flexDirection: "row", gap: 8, marginBottom: 24 },
-  socialBtn: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 6,
-    backgroundColor: "#ffffff",
-    borderWidth: 1,
-    borderColor: "#e5e7eb",
-    borderRadius: 8,
-    paddingVertical: 10,
-  },
+  socialRow: {
+  marginBottom: 24,
+},
+ socialBtn: {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 8,
+  backgroundColor: "#ffffff",
+  borderWidth: 1,
+  borderColor: "#e5e7eb",
+  borderRadius: 10,
+  paddingVertical: 13,
+  width: "100%",
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 1 },
+  shadowOpacity: 0.05,
+  shadowRadius: 2,
+  elevation: 1,
+},
   socialText: { fontSize: 14, fontWeight: "600", color: "#374151" },
   signupRow: {
     flexDirection: "row",
